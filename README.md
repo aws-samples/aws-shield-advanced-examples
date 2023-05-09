@@ -1,17 +1,2 @@
-## My Project
-
-TODO: Fill this README out!
-
-Be sure to:
-
-* Change the title in this README
-* Edit your repository description on GitHub
-
-## Security
-
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
-
-## License
-
-This library is licensed under the MIT-0 License. See the LICENSE file.
-
+# Aws-shield-advanced-examples  
+AWS Shield Advanced has AWS CloudFormation support to configure AWS Shield and create protection.  This repo provide practical templates demonstrating these abilities as well as a custom lambda backed inline mechanism to subscribe to AWS SHield Advanced (if desired)

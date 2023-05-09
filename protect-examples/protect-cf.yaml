@@ -1,0 +1,19 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  CloudFrontDistributionId:
+    Type: String
+  HealthCheckId:
+    Type: String
+Resources:
+  Protection:
+    Type: AWS::Shield::Protection
+    Properties:
+      Name: 'MyDistributionwithL7Protection'
+      ResourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistributionId}"
+      HealthCheckArns:
+        - !Sub 'arn:${AWS::Partition}:route53:::healthcheck/${HealthCheckId}'
+      ApplicationLayerAutomaticResponseConfiguration:
+        Status: ENABLED
+        Action:
+          Block: { }

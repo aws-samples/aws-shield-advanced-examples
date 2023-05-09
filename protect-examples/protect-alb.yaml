@@ -1,0 +1,19 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  ALBArn:
+    Type: String
+  HealthCheckId:
+    Type: String
+Resources:
+  Protection:
+    Type: AWS::Shield::Protection
+    Properties:
+      Name: 'MyALBwithL7Protection'
+      ResourceArn: !Ref ALBArn
+      HealthCheckArns:
+        - !Sub 'arn:${AWS::Partition}:route53:::healthcheck/${HealthCheckId}'
+      ApplicationLayerAutomaticResponseConfiguration:
+        Status: ENABLED
+        Action:
+          Block: { }

@@ -1,0 +1,15 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  GlobalAcceleratorArn:
+    Type: String
+  HealthCheckId:
+    Type: String
+Resources:
+  Protection:
+    Type: AWS::Shield::Protection
+    Properties:
+      Name: 'MyAcceleratorProtection'
+      ResourceArn: !Ref "GlobalAcceleratorArn"
+      HealthCheckArns:
+        - !Sub 'arn:${AWS::Partition}:route53:::healthcheck/${HealthCheckId}'

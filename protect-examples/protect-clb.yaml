@@ -1,0 +1,15 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  CLBName:
+    Type: String
+  HealthCheckId:
+    Type: String
+Resources:
+  Protection:
+    Type: AWS::Shield::Protection
+    Properties:
+      Name: 'MyCLBProtection'
+      ResourceArn: !Sub "arn:${AWS::Partition}:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:loadbalancer/${CLBName}"
+      HealthCheckArns:
+        - !Sub 'arn:${AWS::Partition}:route53:::healthcheck/${HealthCheckId}'

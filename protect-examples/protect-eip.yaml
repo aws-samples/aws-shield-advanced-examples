@@ -1,0 +1,15 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  EIPAllocationId:
+    Type: String
+  HealthCheckId:
+    Type: String
+Resources:
+  Protection:
+    Type: AWS::Shield::Protection
+    Properties:
+      Name: 'MyEIPProtection'
+      ResourceArn: !Sub 'arn:${AWS::Partition}:ec2:${AWS::Region}:${AWS::AccountId}:eip-allocation/${EIPAllocationId}'
+      HealthCheckArns:
+        - !Sub 'arn:${AWS::Partition}:route53:::healthcheck/${HealthCheckId}'

@@ -1,0 +1,15 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  HostedZoneId:
+    Type: String
+  HealthCheckId:
+    Type: String
+Resources:
+  Protection:
+    Type: AWS::Shield::Protection
+    Properties:
+      Name: 'MyHostedZoneProtection'
+      ResourceArn: !Sub "arn:${AWS::Partition}:route53:::hostedzone/${HostedZoneId}"
+      HealthCheckArns:
+        - !Sub 'arn:${AWS::Partition}:route53:::healthcheck/${HealthCheckId}'
