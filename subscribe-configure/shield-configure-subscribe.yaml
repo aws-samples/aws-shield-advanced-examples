@@ -5,10 +5,18 @@ Metadata:
     ParameterGroups:
       -
         Label:
-          default: "AWS Shield Advanced Configurations"
+          default: "AWS Shield Advanced Subscription"
+        Parameters:
+          - AcknowledgeServiceTermsPricing
+          - AcknowledgeServiceTermsDTO
+          - AcknowledgeServiceTermsCommitment
+          - AcknowledgeServiceTermsAutoRenew
+          - AcknowledgeNoUnsubscribe
+      -
+        Label:
+          default: "AWS Shield Advanced Proactive Engagement"
         Parameters:
           - EnabledProactiveEngagement
-          - EnableSRTAccess
           - EmergencyContactEmail1
           - EmergencyContactPhone1
           - EmergencyContactNote1
@@ -24,8 +32,51 @@ Metadata:
           - EmergencyContactEmail5
           - EmergencyContactPhone5
           - EmergencyContactNote5
+      -
+        Label:
+          default: "AWS Shield Advanced SRT Access"
+        Parameters:
+          - EnableSRTAccess
           - SRTAccessRoleName
+          - SRTAccessRoleAction
+          - SRTBuckets
+
 Parameters:
+  AcknowledgeServiceTermsPricing:
+    Type: String
+    Default: False
+    Description: Shield Advanced Service Term | Pricing | $3000 / month subscription fee for a consolidated billing family
+    AllowedValues:
+      - True
+      - False
+  AcknowledgeServiceTermsDTO:
+    Type: String
+    Default: False
+    Description: Shield Advanced Service Term | Pricing | Data transfer out usage fees for all protected resources.
+    AllowedValues:
+      - True
+      - False
+  AcknowledgeServiceTermsCommitment:
+    Type: String
+    Default: False
+    Description: Shield Advanced Term | Commitment | I am committing to a 12 month subscription.
+    AllowedValues:
+      - True
+      - False
+  AcknowledgeServiceTermsAutoRenew:
+    Type: String
+    Default: False
+    Description: Shield Advanced Term | Auto renewal | Subscription will be auto-renewed after 12 months. However, I can opt out of renewal 30 days prior to the renewal date.
+    AllowedValues:
+      - True
+      - False
+  AcknowledgeNoUnsubscribe:
+    Type: String
+    Default: False
+    Description:  Shield Advanced subscription on delete | Shield Advanced does not un-subscribe if you delete this stack/this resource.
+    AllowedValues:
+      - True
+      - False
   EmergencyContactEmail1:
     Type: String
     Default: <na>
@@ -125,6 +176,23 @@ Conditions:
     SRTCreateRoleCondition: !Equals [!Ref "SRTAccessRoleAction", "CreateRole"]
     SRTBucketsCondition: !Not [!Equals [ !Join [",",!Ref "SRTBuckets"], "<na>" ] ]
     ProactiveEngagementCondition: !Equals [ !Ref "EnabledProactiveEngagement",true]
+    AcceptedShieldTerms: !And
+    - Fn::Equals:
+      - True
+      - !Ref AcknowledgeServiceTermsPricing
+    - Fn::Equals:
+      - True
+      - !Ref AcknowledgeServiceTermsDTO
+    - Fn::Equals:
+      - True
+      - !Ref AcknowledgeServiceTermsCommitment
+    - Fn::Equals:
+      - True
+      - !Ref AcknowledgeServiceTermsAutoRenew
+    - Fn::Equals:
+      - True
+      - !Ref AcknowledgeNoUnsubscribe
+
 Resources:
   ConfigureShieldLambdaRole:
     Type: AWS::IAM::Role
@@ -170,6 +238,7 @@ Resources:
       Roles:
         - !Ref ConfigureShieldLambdaRole
   SubscribeShieldAdvanced:
+    Condition: AcceptedShieldTerms
     DependsOn: ConfigureShieldLambdaPolicy
     Type: Custom::SubscribeShieldAdvanced
     Properties:
@@ -234,8 +303,6 @@ Resources:
                         responseData['Message'] = "CFN Delete, no action taken"
                         cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData, "CFNDeleteGracefulContinue")
                         return()
-
-
   ProactiveEngagement:
     DeletionPolicy: Delete
     DependsOn: SubscribeShieldAdvanced
@@ -263,19 +330,19 @@ Resources:
               - ThirdEmergencyContact
               - EmailAddress: !Ref "EmergencyContactEmail3"
                 ContactNotes: !If [ThirdEmergencyContactNote, !Ref "EmergencyContactNote3", !Ref "AWS::NoValue"]
-                PhoneNumber: !Ref "EmergencyContactPhone3"              
+                PhoneNumber: !Ref "EmergencyContactPhone3"
               - !Ref "AWS::NoValue"
           - !If
               - FourthEmergencyContact
               - EmailAddress: !Ref "EmergencyContactEmail4"
                 ContactNotes: !If [FourthEmergencyContactNote, !Ref "EmergencyContactNote4", !Ref "AWS::NoValue"]
-                PhoneNumber: !Ref "EmergencyContactPhone4"              
+                PhoneNumber: !Ref "EmergencyContactPhone4"
               - !Ref "AWS::NoValue"
           - !If
               - FifthEmergencyContact
               - EmailAddress: !Ref "EmergencyContactEmail5"
                 ContactNotes: !If [FifthEmergencyContactNote, !Ref "EmergencyContactNote5", !Ref "AWS::NoValue"]
-                PhoneNumber: !Ref "EmergencyContactPhone5"              
+                PhoneNumber: !Ref "EmergencyContactPhone5"
               - !Ref "AWS::NoValue"
         - !Ref "AWS::NoValue"
 
