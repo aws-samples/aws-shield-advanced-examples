@@ -73,7 +73,7 @@ Parameters:
   AcknowledgeNoUnsubscribe:
     Type: String
     Default: False
-    Description:  Shield Advanced subscription on delete | Shield Advanced does not un-subscribe if you delete this stack/this resource.
+    Description:  Shield Advanced does not un-subscribe on delete | Shield Advanced does not un-subscribe if you delete this stack/this resource.
     AllowedValues:
       - True
       - False
@@ -139,10 +139,11 @@ Parameters:
     AllowedPattern: ^[\w\s\.\-,:/()+@]*$|\<na\>
   EnabledProactiveEngagement:
     Type: String
-    Default: true
+    Default: False
+    Description: Enable Proactive Engagement.  Note you must also configure emergency contact(s) and health checks for protected resources for this feature to be effective
     AllowedValues:
-      - true
-      - false
+      - True
+      - False
   SRTBuckets:
     Type: CommaDelimitedList
     Default: <na>
@@ -157,7 +158,7 @@ Parameters:
     - "CreateRole"
   EnableSRTAccess:
     Type: String
-    Default: True
+    Default: False
     AllowedValues:
       - True
       - False
@@ -260,7 +261,7 @@ Resources:
       Runtime: python3.9
       Timeout: 15
       Role: !GetAtt ConfigureShieldLambdaRole.Arn
-      Handler: shield/subscription/lambda/index.lambda_handler
+      Handler: index.lambda_handler
       Code:
         ZipFile: |
             import boto3
