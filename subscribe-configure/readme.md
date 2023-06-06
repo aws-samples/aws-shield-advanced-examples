@@ -1,4 +1,4 @@
-# AWS Shield Advanced Subscription and Configuration with AWS CloudFormation
+# AWS Shield Advanced Subscription and Configuration with [AWS CloudFormation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Shield.html)
 
 Two example templates are provided to help you  subscribe and/or configure AWS Shield Advanced using CloudFormation.
 

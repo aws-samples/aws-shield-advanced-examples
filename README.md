@@ -1,2 +1,2 @@
 # Aws-shield-advanced-examples  
-AWS Shield Advanced has AWS CloudFormation support to configure AWS Shield and create protection.  This repo provide practical templates demonstrating these abilities as well as a custom lambda backed inline mechanism to subscribe to AWS SHield Advanced (if desired)
+AWS Shield Advanced has [AWS CloudFormation](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Shield.html) support to configure AWS Shield and create protection.  This repo provide practical templates demonstrating these abilities as well as a custom lambda backed inline mechanism to subscribe to AWS SHield Advanced (if desired)
